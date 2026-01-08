@@ -36,38 +36,70 @@
       <% if (typeof messages !== 'undefined' && messages.length > 0) { %>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% messages.forEach(msg => { %> <% const limit = 100; const isLong =
-        msg.content.length > limit; const displayContent = isLong ?
-        msg.content.substring(0, limit) + '...' : msg.content; const timeStr =
-        new Date(msg.created_at).toLocaleTimeString('id-ID', {hour: '2-digit',
-        minute:'2-digit'}); %>
+        <% messages.forEach(msg => { %> 
+            <% 
+               const limit = 100; 
+               const isLong = msg.content.length > limit; 
+               const displayContent = isLong ? msg.content.substring(0, limit) + '...' : msg.content; 
+               const timeStr = new Date(msg.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); 
+            %>
 
         <div
           class="<%= msg.color %> p-6 rounded-2xl border border-black/5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition duration-300 flex flex-col h-full relative cursor-pointer group"
           onclick="openModal(`<%= msg.sender %>`, `<%= msg.content %>`, `<%= msg.color %>`, `<%= timeStr %>`)"
         >
           <div class="flex-grow">
-            <p
-              class="text-slate-800 text-lg font-medium leading-relaxed whitespace-pre-wrap mb-2"
-            >
+            <p class="text-slate-800 text-lg font-medium leading-relaxed whitespace-pre-wrap mb-2">
               "<%= displayContent %>"
             </p>
 
             <% if(isLong) { %>
-            <span
-              class="text-xs font-bold text-slate-500 group-hover:text-indigo-600 transition underline decoration-dotted"
-              >Baca Selengkapnya ↗</span
-            >
+            <span class="text-xs font-bold text-slate-500 group-hover:text-indigo-600 transition underline decoration-dotted">
+              Baca Selengkapnya ↗
+            </span>
             <% } %>
           </div>
 
-          <div
-            class="mt-4 pt-4 border-t border-black/5 flex justify-between items-center text-xs text-slate-500"
-          >
-            <span class="font-bold text-slate-700 truncate max-w-[120px]"
-              >From: <%= msg.sender %></span
-            >
-            <span><%= timeStr %></span>
+          <div class="mt-4 pt-4 border-t border-black/5 flex justify-between items-end">
+            
+            <div class="flex flex-col text-xs text-slate-500">
+              <span class="font-bold text-slate-700 truncate max-w-[120px]">
+                From: <%= msg.sender %>
+              </span>
+              <span class="mt-0.5"><%= timeStr %></span>
+            </div>
+
+            <div class="flex items-center gap-3 bg-white/50 px-2 py-1 rounded-full backdrop-blur-sm" onclick="event.stopPropagation()">
+                
+                <button 
+                  onclick="likeMenfess('<%= msg.id %>')" 
+                  class="flex items-center gap-1 group text-slate-400 hover:text-green-600 transition-colors duration-200"
+                  title="Like"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 group-hover:scale-110 transition-transform">
+                      <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V3a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.247-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H9.719c-.357 0-.717-.032-1.074-.094a6.015 6.015 0 0 1 .586-3.322c.314-.647.247-1.396-.13-2.022a1.5 1.5 0 0 0-1.85-1.5c-1.35.346-2.693 1.082-3.79 2.083A6.001 6.001 0 0 1 7.49 18.75Z" />
+                    </svg>
+                    <span class="text-xs font-bold" id="likes-count-<%= msg.id %>">
+                      <%= msg.jumlah_like || 0 %>
+                    </span>
+                </button>
+
+                <div class="w-px h-4 bg-slate-300"></div>
+
+                <button 
+                  onclick="dislikeMenfess('<%= msg.id %>')" 
+                  class="flex items-center gap-1 group text-slate-400 hover:text-red-600 transition-colors duration-200"
+                  title="Dislike"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 group-hover:scale-110 transition-transform mt-1">
+                      <path d="M15.73 5.25h1.035A7.465 7.465 0 0 1 18 9.375a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.498 4.498 0 0 0-.322 1.672v.633a.75.75 0 0 1-.75.75 2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.247.723-3.218.266-.558-.107-1.282-.725-1.282H3.628c-1.026 0-1.945-.694-2.054-1.715A11.95 11.95 0 0 1 4.223 5.23a11.95 11.95 0 0 1 2.649-7.521c.388-.482.987-.729 1.605-.729h3.768c.357 0 .717.032 1.074.094a6.015 6.015 0 0 1-.586 3.322c-.314.647-.247 1.396.13 2.022a1.5 1.5 0 0 0 1.85 1.5c1.35-.346 2.693-1.082 3.79-2.083A6.001 6.001 0 0 1 15.73 5.25Z" />
+                    </svg>
+                    <span class="text-xs font-bold" id="dislikes-count-<%= msg.id %>">
+                      <%= msg.jumlah_dislike || 0 %>
+                    </span>
+                </button>
+            </div>
+
           </div>
         </div>
         <% }) %>
@@ -200,6 +232,7 @@
       const modalSender = document.getElementById("modalSender");
       const modalTime = document.getElementById("modalTime");
 
+      // Fungsi Buka Modal
       function openModal(sender, content, color, time) {
         modalContent.innerText = content;
         modalSender.innerText = "From: " + sender;
@@ -214,7 +247,6 @@
           "bg-purple-100",
         ];
         modalCard.classList.remove(...colors);
-
         modalCard.classList.add(color);
 
         modal.classList.remove("hidden");
@@ -226,6 +258,7 @@
         }, 10);
       }
 
+      // Fungsi Tutup Modal
       function closeModal() {
         backdrop.classList.add("opacity-0");
         panel.classList.remove("scale-100", "opacity-100");
@@ -237,6 +270,55 @@
       }
 
       backdrop.addEventListener("click", closeModal);
+
+      // --- LOGIKA TOMBOL LIKE & DISLIKE (AJAX) ---
+      
+      async function likeMenfess(id) {
+        try {
+          // Kirim request ke backend tanpa refresh
+          const response = await fetch(`/api/menfess/${id}/like`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            // Update angka di layar
+            const countElement = document.getElementById(`likes-count-${id}`);
+            if(countElement) countElement.innerText = data.total_likes;
+            
+            // Efek animasi kecil
+            const btn = countElement.parentElement;
+            btn.classList.add('scale-125');
+            setTimeout(() => btn.classList.remove('scale-125'), 200);
+          }
+        } catch (error) {
+          console.error("Gagal mengirim like:", error);
+        }
+      }
+
+      async function dislikeMenfess(id) {
+        try {
+          const response = await fetch(`/api/menfess/${id}/dislike`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            // Update angka di layar
+            const countElement = document.getElementById(`dislikes-count-${id}`);
+            if(countElement) countElement.innerText = data.total_dislike;
+            
+            // Efek animasi kecil
+            const btn = countElement.parentElement;
+            btn.classList.add('scale-125');
+            setTimeout(() => btn.classList.remove('scale-125'), 200);
+          }
+        } catch (error) {
+          console.error("Gagal mengirim dislike:", error);
+        }
+      }
     </script>
   </body>
 </html>
