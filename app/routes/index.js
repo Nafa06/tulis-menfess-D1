@@ -37,10 +37,30 @@ router.post("/send", async (req, res) => {
   }
 });
 
-// TODO: Tambahkan Route LIKE di sini
-// Clue: router.post('/like/:id', async (req, res) => { ... })
+router.like('/like/:id', async (req, res) => {
+    const { id } = req.params; 
+    
+    try {
+        await db.query('UPDATE nama_tabel SET likes = likes + 1 WHERE id = ?', [id]);
+        
+        res.redirect('/'); 
+    } catch (error) {
+        console.error("Error saat Like:", error);
+        res.status(500).send("Gagal melakukan Like");
+    }
+});
 
-// TODO: Tambahkan Route DISLIKE di sini
-// Clue: Mirip like, tapi yang ditambah kolom dislikes
+router.dislike('/dislike/:id', async (req, res) => {
+    const { id } = req.params; 
+
+    try {
+        await db.query('UPDATE nama_tabel SET dislikes = dislikes + 1 WHERE id = ?', [id]);
+
+        res.redirect('/'); 
+    } catch (error) {
+        console.error("Error saat Dislike:", error);
+        res.status(500).send("Gagal melakukan Dislike");
+    }
+});
 
 module.exports = router;
