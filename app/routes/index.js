@@ -37,11 +37,11 @@ router.post("/send", async (req, res) => {
   }
 });
 
-router.like('/like/:id', async (req, res) => {
+router.post('/like/:id', async (req, res) => {
     const { id } = req.params; 
     
     try {
-        await db.query('UPDATE nama_tabel SET likes = likes + 1 WHERE id = ?', [id]);
+        await db.query('UPDATE menfess SET likes = likes + 1 WHERE id = ?', [id]);
         
         res.redirect('/'); 
     } catch (error) {
@@ -50,11 +50,11 @@ router.like('/like/:id', async (req, res) => {
     }
 });
 
-router.dislike('/dislike/:id', async (req, res) => {
+router.post('/dislike/:id', async (req, res) => {
     const { id } = req.params; 
 
     try {
-        await db.query('UPDATE nama_tabel SET dislikes = dislikes + 1 WHERE id = ?', [id]);
+        await db.query('UPDATE menfess SET dislikes = dislikes + 1 WHERE id = ?', [id]);
 
         res.redirect('/'); 
     } catch (error) {
